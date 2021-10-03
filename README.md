@@ -32,6 +32,12 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Documentation
+
+```
+ Run APP and open browser on http://localhost:3000/swagger
+```
+
 ## License
 
 Nest is [MIT licensed](LICENSE).
