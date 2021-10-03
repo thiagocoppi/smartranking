@@ -1,35 +1,72 @@
 import { JogadoresService } from './jogadores.service';
-import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CriarJogadorDto } from './dtos/criar-jogador.dto';
-import { Jogador } from './interfaces/jogadores.interface';
+import { Jogador } from './interfaces/jogadores.entity';
+import { JogadoresValidacaoParametrosPipe } from './pipes/jogadores-validacao-parametros.pipe';
+import { AtualizarJogadorDto } from './dtos/atualizar-jogador.dto';
+import {
+    ApiBearerAuth,
+    ApiOperation,
+    ApiResponse,
+    ApiTags
+  } from '@nestjs/swagger';
+
 
 @Controller('api/v1/jogadores')
+@ApiTags('Jogadores')
 export class JogadoresController {
 
 
     constructor(private readonly jogadoresService: JogadoresService) { }
 
     @Post()
-    async criarAtualizarJogador(
-        @Body() criarJogadorDto: CriarJogadorDto) {
-        await this.jogadoresService.criarAtualizarJogador(criarJogadorDto);
+    @UsePipes(ValidationPipe)
+    @ApiOperation({ summary: 'Criação de um jogador'})
+    @ApiResponse({ status: 201, description: 'Jogador criado' })
+    @ApiResponse({ status: 400, description: 'Ocorreu um erro' })
+    async criarJogador(
+        @Body() criarJogadorDto: CriarJogadorDto): Promise<void> {
+        await this.jogadoresService.criarJogador(criarJogadorDto);
+    }
+
+    @Put('/:id')
+    @UsePipes(ValidationPipe)
+    @ApiOperation({ summary: 'Atualização de um jogador'})
+    @ApiResponse({ status: 200, description: 'Jogador criado' })
+    @ApiResponse({ status: 400, description: 'Ocorreu um erro' })
+    async atualizarJogador(
+        @Param('id', JogadoresValidacaoParametrosPipe) id,
+        @Body() atualizarJogadorDto: AtualizarJogadorDto): Promise<void> {
+        await this.jogadoresService.atualizarJogador(id, atualizarJogadorDto);
     }
 
     @Get()
-    async consultarJogadores(
-        @Query('email') email: string
-    ): Promise<Jogador[] | Jogador> {
-        if (email) {
-            return await this.jogadoresService.consultarJogadorPeloEmail(email);
-        }
+    @ApiOperation({ summary: 'Listar todos os jogadores'})
+    @ApiResponse({ status: 200, description: 'Jogador removido', type: Jogador, isArray: true })
+    @ApiResponse({ status: 400, description: 'Ocorreu um erro' })
+    async consultarJogadores(): Promise<Jogador[] | Jogador> {        
         return this.jogadoresService.consultarTodosJogadores();
     }
 
-    @Delete()
+    @Get('/:id')
+    @ApiOperation({ summary: 'Buscar um jogador pelo identificador único'})
+    @ApiResponse({ status: 200, description: 'Jogador encontrado', type: Jogador })
+    @ApiResponse({ status: 400, description: 'Ocorreu um erro' })
+    @ApiResponse({ status: 404, description: 'Não encontrado' })
+    async consultarJogadoresPeloId(
+        @Param('id', JogadoresValidacaoParametrosPipe) id: string
+    ): Promise<Jogador> {
+        return this.jogadoresService.consultarJogadorPeloId(id);
+    }
+
+    @Delete('/:id')
+    @ApiOperation({ summary: 'Remover jogador'})
+    @ApiResponse({ status: 200, description: 'Jogador removido' })
+    @ApiResponse({ status: 400, description: 'Ocorreu um erro' })
     async deletarJogador(
-        @Query('email') email: string
+        @Param('id', JogadoresValidacaoParametrosPipe) id: string
     ): Promise<void> {
-        return this.jogadoresService.removerJogador(email);
+        return this.jogadoresService.removerJogador(id);
     }
 
 }
