@@ -1,15 +1,14 @@
 import { JogadoresService } from './jogadores.service';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CriarJogadorDto } from './dtos/criar-jogador.dto';
-import { Jogador } from './interfaces/jogadores.entity';
 import { JogadoresValidacaoParametrosPipe } from './pipes/jogadores-validacao-parametros.pipe';
 import { AtualizarJogadorDto } from './dtos/atualizar-jogador.dto';
 import {
-    ApiBearerAuth,
     ApiOperation,
     ApiResponse,
     ApiTags
   } from '@nestjs/swagger';
+import { Jogador } from './entities/jogadores.entity';
 
 
 @Controller('api/v1/jogadores')
