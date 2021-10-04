@@ -1,3 +1,4 @@
+import { JogadoresModule } from './../jogadores/jogadores.module';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CategoriasController } from './categorias.controller';
@@ -7,7 +8,9 @@ import { CategoriaSchema } from './entities/categoria.schema';
 @Module({
   controllers: [CategoriasController],
   providers: [CategoriasService],
-  imports: [ MongooseModule.forFeature([
+  imports: [ 
+    JogadoresModule,
+    MongooseModule.forFeature([
     {
       name: 'Categoria',
       schema: CategoriaSchema

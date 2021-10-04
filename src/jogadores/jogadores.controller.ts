@@ -1,7 +1,6 @@
 import { JogadoresService } from './jogadores.service';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CriarJogadorDto } from './dtos/criar-jogador.dto';
-import { JogadoresValidacaoParametrosPipe } from './pipes/jogadores-validacao-parametros.pipe';
 import { AtualizarJogadorDto } from './dtos/atualizar-jogador.dto';
 import {
     ApiOperation,
@@ -9,6 +8,7 @@ import {
     ApiTags
   } from '@nestjs/swagger';
 import { Jogador } from './entities/jogadores.entity';
+import { ValidacaoParametrosPipe } from 'src/common/pipes/validacao-parametros.pipe';
 
 
 @Controller('api/v1/jogadores')
@@ -34,7 +34,7 @@ export class JogadoresController {
     @ApiResponse({ status: 200, description: 'Jogador criado' })
     @ApiResponse({ status: 400, description: 'Ocorreu um erro' })
     async atualizarJogador(
-        @Param('id', JogadoresValidacaoParametrosPipe) id,
+        @Param('id', ValidacaoParametrosPipe) id,
         @Body() atualizarJogadorDto: AtualizarJogadorDto): Promise<void> {
         await this.jogadoresService.atualizarJogador(id, atualizarJogadorDto);
     }
@@ -53,7 +53,7 @@ export class JogadoresController {
     @ApiResponse({ status: 400, description: 'Ocorreu um erro' })
     @ApiResponse({ status: 404, description: 'Não encontrado' })
     async consultarJogadoresPeloId(
-        @Param('id', JogadoresValidacaoParametrosPipe) id: string
+        @Param('id', ValidacaoParametrosPipe) id: string
     ): Promise<Jogador> {
         return this.jogadoresService.consultarJogadorPeloId(id);
     }
@@ -63,7 +63,7 @@ export class JogadoresController {
     @ApiResponse({ status: 200, description: 'Jogador removido' })
     @ApiResponse({ status: 400, description: 'Ocorreu um erro' })
     async deletarJogador(
-        @Param('id', JogadoresValidacaoParametrosPipe) id: string
+        @Param('id', ValidacaoParametrosPipe) id: string
     ): Promise<void> {
         return this.jogadoresService.removerJogador(id);
     }
