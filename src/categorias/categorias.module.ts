@@ -8,6 +8,7 @@ import { CategoriaSchema } from './entities/categoria.schema';
 @Module({
   controllers: [CategoriasController],
   providers: [CategoriasService],
+  exports: [CategoriasService],
   imports: [ 
     JogadoresModule,
     MongooseModule.forFeature([
